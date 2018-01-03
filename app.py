@@ -7,36 +7,55 @@ from flask import Flask, request, send_file
 from fsm import TocMachine
 
 
-API_TOKEN = 'Your Telegram API Token'
-WEBHOOK_URL = 'Your Webhook URL'
+API_TOKEN = '544027094:AAHEboUFRaa22mqgp8FR_pF06mips0hNiVs'
+WEBHOOK_URL = 'https://6075bb75.ngrok.io/hook'
 
 app = Flask(__name__)
 bot = telegram.Bot(token=API_TOKEN)
 machine = TocMachine(
     states=[
         'user',
-        'state1',
-        'state2'
+        'listen1',
+        'listen2',
+	'rank',
+	'hero',
+	'time'
+	
     ],
     transitions=[
         {
             'trigger': 'advance',
             'source': 'user',
-            'dest': 'state1',
-            'conditions': 'is_going_to_state1'
+            'dest': 'listen1',
+            'conditions': 'is_going_to_listen1'
         },
         {
             'trigger': 'advance',
             'source': 'user',
-            'dest': 'state2',
-            'conditions': 'is_going_to_state2'
+            'dest': 'listen2',
+            'conditions': 'is_going_to_listen2'
+        },
+	{
+	    'trigger':'advance',
+	    'source':'listen1',
+	    'dest':'rank',
+	    'conditions': 'is_going_to_rank'
+	},
+        {
+            'trigger':'advance',
+            'source':'listen2',
+            'dest':'hero',
+            'conditions': 'is_going_to_hero'
+        },
+        {
+            'trigger':'advance',
+            'source':'user',
+            'dest':'time',
+            'conditions': 'is_going_to_time'
         },
         {
             'trigger': 'go_back',
-            'source': [
-                'state1',
-                'state2'
-            ],
+            'source': ['hero','rank','time'],
             'dest': 'user'
         }
     ],
@@ -45,7 +64,7 @@ machine = TocMachine(
     show_conditions=True,
 )
 
-
+#############################################################################
 def _set_webhook():
     status = bot.set_webhook(WEBHOOK_URL)
     if not status:
@@ -72,4 +91,5 @@ def show_fsm():
 
 if __name__ == "__main__":
     _set_webhook()
-    app.run()
+    app.run(port=5000)
+#############################################################################
