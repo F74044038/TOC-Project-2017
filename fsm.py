@@ -43,10 +43,31 @@ class TocMachine(GraphMachine):
 
     def on_enter_rank(self, update):
         print('on enter')
-        self.go_back(update)
 	
     def on_exit_rank(self, update):
-        print('Leaving rank') 
+        print('Leaving rank')
+
+
+    def is_going_to_stat(self, update):
+        print('going to rank')
+        text = update.message.text
+        Stat=crawler_record(text)
+        if Stat!='Wrong Input Name!!':
+           update.message.reply_text("狀態:")
+           update.message.reply_text(Stat)
+           return True
+        else:
+           update.message.reply_text('Wrong Input')
+           return False
+
+
+    def on_enter_stat(self, update):
+        print('on enter stat')
+        self.go_back(update)
+
+
+    def on_exit_rank(self, update):
+        print('Leaving stat')
 ###############################################################
     def is_going_to_listen2(self, update):
         print('go to search hero')
@@ -186,3 +207,20 @@ def crawler_time():
             
     print(result)
     return result
+#####################################################################
+def crawler_record(name='ScorpioGary'):
+    url="https://lol.moa.tw/summoner/show/"+name
+    print('Your want to search '+name)
+    res=requests.get(url)
+    soup=BeautifulSoup(res.text,'html.parser')
+    articles=soup.select('div.col-xs-3.h2')
+    if len(articles)==0:
+        data=("Wrong Input Name!!")
+        return data
+    result=''
+    result="友善:      "+articles[0].text+'\n'
+    result=result+"熱心助人:  "+articles[1].text+'\n'
+    result=result+"團隊合作:  "+articles[2].text+'\n'
+    result=result+"可敬的對手:"+articles[3].text+'\n'
+    print(result)
+    return result 

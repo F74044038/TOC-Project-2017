@@ -18,6 +18,7 @@ machine = TocMachine(
         'listen1',
         'listen2',
 	'rank',
+	'stat',
 	'hero',
 	'time'
 	
@@ -41,6 +42,12 @@ machine = TocMachine(
 	    'dest':'rank',
 	    'conditions': 'is_going_to_rank'
 	},
+	{
+            'trigger':'advance',
+            'source':'rank',
+            'dest':'stat',
+            'conditions': 'is_going_to_stat'
+        },
         {
             'trigger':'advance',
             'source':'listen2',
@@ -55,7 +62,7 @@ machine = TocMachine(
         },
         {
             'trigger': 'go_back',
-            'source': ['hero','rank','time'],
+            'source': ['hero','stat','time'],
             'dest': 'user'
         }
     ],
